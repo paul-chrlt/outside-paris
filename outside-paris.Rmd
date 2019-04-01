@@ -1,0 +1,37 @@
+---
+title: "Quitter Paris, mais pour aller où ?"
+author: "Paul Charlet"
+date: "April 1, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(kableExtra)
+```
+
+## Intro
+
+Quelle est la meilleure ville pour s'installer en dehors de Paris ? Chacun a sa meilleure réponse, basée sur un certain nombre de critères comme la météo, l'emploi, l'éloignement, le coût de la vie, ...
+
+Je propose dans cet essai d'aller récupérer ces données et de les visualiser.
+
+## Quelles sont les plus grandes villes de France ?
+
+Nous allons utiliser Wikidata pour récupérer les 20 plus grandes villes de France, puis nettoyer les coordonnées pour pouvoir les utiliser par la suite. On obtient le tableau ci-dessous (Paris est enregistrée séparément). Pour voir les fonctions utilisées, vous pouvez retrouver le fichier sur le repo.
+
+```{r, message=FALSE}
+source("getCities.R")
+cities <- getCities(2,21)
+paris <- getCities(1,1)
+kable(cities)
+```
+
+# Critère de distance
+
+Nous allons commencer par calculer les distances entre chacune de ces villes et Paris. Nous commencerons par des distances à vol d'oiseau.
+
+```{r}
+source("straightDistance.R")
+#straightDistance(cities$lon,cities$lat,2.351827777, 48.856577777)
+```
