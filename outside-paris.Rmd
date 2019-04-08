@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(kableExtra)
+library(leaflet)
 ```
 
 ## Intro
@@ -27,11 +28,30 @@ paris <- getCities(1,1)
 kable(cities)
 ```
 
-# Critère de distance
+Soit, visuellement
+
+```{r}
+francemap <- leaflet() %>%
+    addTiles() %>%
+    addMarkers(lng = cities$lon, lat = cities$lat, popup = cities$city)
+francemap
+```
+
+## Critère de distance
 
 Nous allons commencer par calculer les distances entre chacune de ces villes et Paris. Nous commencerons par des distances à vol d'oiseau.
 
 ```{r}
 source("straightDistance.R")
-#straightDistance(cities$lon,cities$lat,2.351827777, 48.856577777)
+distanceToParis <- vector()
+for (i in 1:length(cities[,1])){
+    distanceToParis[i] <- straightDistance(cities$lon[i],cities$lat[i],paris$lon,paris$lat)
+}
+cities <- cbind(cities,distanceToParis)
+cities[,c(1,6)]
 ```
+
+## Critère d'intérêt et activité
+
+En utilisant Google Trends, nous pouvons obtenir une idée de l'activité (sur internet) autour de ces villes. Cela constituera notre critère d'activité.
+

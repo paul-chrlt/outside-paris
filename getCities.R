@@ -20,7 +20,9 @@ getCities <- function(from = 1, to = 21) {
     coords <- gsub('.$','',coords)
     coords <- stri_split(coords,regex = " ",simplify=TRUE)
     
-    cities <- cbind(cities[,-3],coords)
+    cities <- cbind(cities[,-3],coords,stringsAsFactors=FALSE)
     names(cities)[c(4,5)]<- c("lon","lat")
+    cities$lon <- as.numeric(cities$lon)
+    cities$lat <- as.numeric(cities$lat)
     cities[from:to,]
 }
