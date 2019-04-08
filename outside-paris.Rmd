@@ -1,7 +1,6 @@
 ---
 title: "Quitter Paris, mais pour aller où ?"
 author: "Paul Charlet"
-date: "April 1, 2019"
 output: html_document
 ---
 
@@ -25,21 +24,21 @@ Nous allons utiliser Wikidata pour récupérer les 20 plus grandes villes de Fra
 source("getCities.R")
 cities <- getCities(2,21)
 paris <- getCities(1,1)
-kable(cities)
+kable(cities[,-3])
 ```
 
-Soit, visuellement
+Soit, visuellement en utilisant le package leaflet.
 
 ```{r}
 francemap <- leaflet() %>%
     addTiles() %>%
-    addMarkers(lng = cities$lon, lat = cities$lat, popup = cities$city)
+    addMarkers(lng = cities$lon, lat = cities$lat, popup = cities$cityLabel)
 francemap
 ```
 
 ## Critère de distance
 
-Nous allons commencer par calculer les distances entre chacune de ces villes et Paris. Nous commencerons par des distances à vol d'oiseau.
+Nous allons commencer par calculer les distances entre chacune de ces villes et Paris. Nous commencerons par des distances à vol d'oiseau. Le contenu de la function `straightDistance()` est disponible dans le repo.
 
 ```{r}
 source("straightDistance.R")
@@ -48,7 +47,7 @@ for (i in 1:length(cities[,1])){
     distanceToParis[i] <- straightDistance(cities$lon[i],cities$lat[i],paris$lon,paris$lat)
 }
 cities <- cbind(cities,distanceToParis)
-cities[,c(1,6)]
+kable(cities[,c(1,6)])
 ```
 
 ## Critère d'intérêt et activité
