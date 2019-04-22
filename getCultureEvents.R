@@ -29,7 +29,3 @@ getCultureEvents <- function(url,cities){
     }
     eventsNumber
 }
-
-coordinates %>% group
-
-url <- "https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv"
