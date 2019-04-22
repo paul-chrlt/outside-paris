@@ -12,9 +12,9 @@ getCultureEvents <- function(url,cities){
         library(prettymapr)
         coordinates <- geocode(coordEvents$adresses,source="dsk", cache="geocache")
         coordinates <- coordinates[,c(5,6)]
-        write.csv(coordEvents,"coordinates.csv")
+        write.csv(coordinates,"coordinates.csv")
     }
-    else{coordEvents <- read.csv("coordinates.csv")}
+    else{coordinates <- read.csv("coordinates.csv")}
     
     for (city in 1:length(cities$cityLabel)){
         cityname <- cities$cityLabel[city]
