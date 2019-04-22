@@ -59,12 +59,14 @@ kable(cities[1:6,c(1,6)], format = "markdown")
 
 On trouve sur data.gouv.fr un agenda de l'offre culturelle par ville (https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv). Malheureusement, ces données datent de 2015 et il n'y a pas de jeu de données plus récent. Récupérons le nombre d'événements culturels.
 
+Le lieu dans ce fichier est précisé en latitude/longitude. Il serait intéressant d'obtenir le nombre d'événements culturels dans un rayon de 10km plutôt que purement dans la ville. Malheureusement, cette donnée n'est présente que dans moins de 10% des cas.  
+Utilisons donc une fonction de geocoding pour récupérer les coordonnées de chaque ville hébergeant chaque événement. Nous avons 34000 adresses à géocoder, ce qui reste dans les limites d'usage de l'API Google : [https://developers.google.com/maps/documentation/geocoding/usage-and-billing]. Il faut néanmoins donner ses coordonnées CB, ce que je ne suis pas prêt à faire. Nous utiliserons l'équivalent chez OpenStreetMaps (Nominatim), dont nous cacherons les requètes pour ne pas surcharger l'API : [https://operations.osmfoundation.org/policies/nominatim/]
+
+La fonction `getCulture()` va calculer pour chaque point du calendrier de l'offre culturelle, si il est dans le rayon de chaque ville. Puis il additionnera le nombre de lignes trouvées pour chaque ville.  
+Nous allons pouvoir réutiliser la fonction de calcul de distances.
 ```{r culturalActivity}
-"https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv"
+cultureAgendaLink <- "https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv"
+source("cultureEvents.R")
+getCulture(cultureAgendaLink,cities)
 ```
 
-Nous pouvons le mettre en rapport avec le nombre de musées par ville, cette statistique étant plus récente(https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv)
-
-```{r museums}
-# "https://www.data.gouv.fr/s/resources/liste-et-localisation-des-musees-de-france/20180605-165759/R_Coordonnees_musees_de_France_2018_data.xlsx"
-```
