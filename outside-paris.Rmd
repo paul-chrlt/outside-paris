@@ -2,8 +2,11 @@
 title: "Quitter Paris, mais pour aller où ?"
 author: "Paul Charlet"
 output:
-    html_document:
-        theme: journal
+   html_document:
+      self_contained: true
+      keep_md: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +25,7 @@ Je propose dans cet essai d'aller récupérer ces données et de les visualiser.
 
 Nous allons utiliser Wikidata pour récupérer les 20 plus grandes villes de France, puis nettoyer les coordonnées pour pouvoir les utiliser par la suite. On obtient le tableau ci-dessous (Paris est enregistrée séparément). Pour voir les fonctions utilisées, vous pouvez retrouver le fichier sur le repo.
 
-```{r, message=FALSE}
+```{r getCities, message=FALSE}
 source("getCities.R")
 cities <- getCities(2,21)
 paris <- getCities(1,1)
@@ -31,7 +34,7 @@ kable(cities[1:6,-3],format="markdown")
 
 Soit, visuellement en utilisant le package leaflet.
 
-```{r}
+```{r franceMap}
 francemap <- leaflet() %>%
     addTiles() %>%
     addMarkers(lng = cities$lon, lat = cities$lat, popup = cities$cityLabel)
@@ -42,7 +45,7 @@ francemap
 
 Nous allons commencer par calculer les distances entre chacune de ces villes et Paris. Nous commencerons par des distances à vol d'oiseau. Le contenu de la function `straightDistance()` est disponible dans le repo.
 
-```{r}
+```{r straightDistance}
 source("straightDistance.R")
 distanceToParis <- vector()
 for (i in 1:length(cities[,1])){
@@ -52,7 +55,16 @@ cities <- cbind(cities,distanceToParis)
 kable(cities[1:6,c(1,6)], format = "markdown")
 ```
 
-## Critère d'intérêt et activité
+## Critère d'activité culturelle
 
-En utilisant Google Trends, nous pouvons obtenir une idée de l'activité (sur internet) autour de ces villes. Cela constituera notre critère d'activité.
+On trouve sur data.gouv.fr un agenda de l'offre culturelle par ville (https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv). Malheureusement, ces données datent de 2015 et il n'y a pas de jeu de données plus récent. Récupérons le nombre d'événements culturels.
 
+```{r culturalActivity}
+"https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv"
+```
+
+Nous pouvons le mettre en rapport avec le nombre de musées par ville, cette statistique étant plus récente(https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv)
+
+```{r museums}
+# "https://www.data.gouv.fr/s/resources/liste-et-localisation-des-musees-de-france/20180605-165759/R_Coordonnees_musees_de_France_2018_data.xlsx"
+```
