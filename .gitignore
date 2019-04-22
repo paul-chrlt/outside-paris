@@ -7,6 +7,9 @@
 
 # Example code in package build process
 *-Ex.R
+/geocache/*
+coordinates.csv
+culture.csv
 
 # Output files from R CMD build
 /*.tar.gz
