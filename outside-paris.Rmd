@@ -67,6 +67,7 @@ Nous allons pouvoir réutiliser la fonction de calcul de distances.
 ```{r culturalActivity}
 cultureAgendaLink <- "https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv"
 source("cultureEvents.R")
-getCulture(cultureAgendaLink,cities)
+events <- getCultureEvents(cultureAgendaLink,cities)
+kable(events[1:6], format = "markdown")
 ```
 
