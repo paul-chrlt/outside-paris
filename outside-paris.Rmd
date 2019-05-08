@@ -1,6 +1,7 @@
 ---
 title: "Quitter Paris, mais pour aller où ?"
 author: "Paul Charlet"
+date : "2019-04-23"
 output:
    html_document:
       self_contained: true
@@ -41,9 +42,25 @@ francemap <- leaflet() %>%
 francemap
 ```
 
+## Score
+
+Ajoutons maintenant une colonne de score, qui prendra en compte les différents critères calculés. L'avantage sera de pouvoir faire évoluer la pondération des critères dans le score. Pour l'instant, le score sera de 100 pour la meilleure ville et de 0 pour la moins bonne. Ce calcul devra évoluer par la suite, la fonction pourra prendre des paramètres en option.
+
+```{r scoreinit}
+source("getScore.R")
+cities$populationScore <- getScore(cities$population)
+cities$score <- cities$populationScore
+francemap <- leaflet() %>%
+    addTiles() %>%
+    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score, label = cities$cityLabel)
+francemap
+```
+
 ## Critère de distance
 
 Nous allons commencer par calculer les distances entre chacune de ces villes et Paris. Nous commencerons par des distances à vol d'oiseau. Le contenu de la function `straightDistance()` est disponible dans le repo.
+
+Dans le calcul du score, cette fois-ci un petit nombre est un bon score, il faut le prendre en compte dans nos calculs
 
 ```{r straightDistance}
 source("straightDistance.R")
@@ -52,6 +69,12 @@ for (i in 1:length(cities[,1])){
     distanceToParis[i] <- straightDistance(cities$lon[i],cities$lat[i],paris$lon,paris$lat)
 }
 cities <- cbind(cities,distanceToParis)
+cities$distanceScore <- 100-getScore(cities$distanceToParis)
+cities$score <- (cities$populationScore+cities$distanceScore)/2
+francemap <- leaflet() %>%
+    addTiles() %>%
+    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score, label = cities$cityLabel)
+francemap
 kable(cities[1:6,c(1,6)], format = "markdown")
 ```
 
@@ -60,7 +83,7 @@ kable(cities[1:6,c(1,6)], format = "markdown")
 On trouve sur data.gouv.fr un agenda de l'offre culturelle par ville (https://www.data.gouv.fr/s/resources/agenda-de-l-offre-culturelle/community/20150724-153623/Agenda24072015.csv). Malheureusement, ces données datent de 2015 et il n'y a pas de jeu de données plus récent. Récupérons le nombre d'événements culturels.
 
 Le lieu dans ce fichier est précisé en latitude/longitude. Il serait intéressant d'obtenir le nombre d'événements culturels dans un rayon de 10km plutôt que purement dans la ville. Malheureusement, cette donnée n'est présente que dans moins de 10% des cas.  
-Utilisons donc une fonction de geocoding pour récupérer les coordonnées de chaque ville hébergeant chaque événement. Nous avons 34000 adresses à géocoder, ce qui reste dans les limites d'usage de l'API Google : [https://developers.google.com/maps/documentation/geocoding/usage-and-billing]. Il faut néanmoins donner ses coordonnées CB, ce que je ne suis pas prêt à faire. Nous utiliserons l'équivalent chez OpenStreetMaps (Nominatim), dont nous cacherons les requètes pour ne pas surcharger l'API : [https://operations.osmfoundation.org/policies/nominatim/]
+Nous pourrions utiliser une fonction de geocoding pour récupérer les coordonnées de chaque ville hébergeant chaque événement. Nous avons 34000 adresses à géocoder, ce qui reste dans les limites d'usage de l'API Google : [https://developers.google.com/maps/documentation/geocoding/usage-and-billing]. Il faut néanmoins donner ses coordonnées CB, ce que je ne suis pas prêt à faire. Nous utiliserons une alternative : le geocoder de Data Science Toolkit [http://www.datasciencetoolkit.org/]
 
 La fonction `getCulture()` va calculer pour chaque point du calendrier de l'offre culturelle, si il est dans le rayon de chaque ville. Puis il additionnera le nombre de lignes trouvées pour chaque ville.  
 Nous allons pouvoir réutiliser la fonction de calcul de distances.
@@ -70,4 +93,4 @@ source("getCultureEvents.R")
 events <- getCultureEvents(cultureAgendaLink,cities)
 kable(events[1:6], format = "markdown")
 ```
-
+Les disparités sont (beaucoup trop) fortes, la source de l'agenda culturel n'est probablement pas la meilleure pour ce que nous cherchons à obtenir. data.gouv.fr a probablement autre chose à nous proposer pour compenser.
