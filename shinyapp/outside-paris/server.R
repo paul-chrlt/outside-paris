@@ -4,7 +4,7 @@ load("cities.Rdata")
 # Define server logic
 shinyServer(function(input, output) {
    
-  output$distPlot <- renderPlot({
+  output$distPlot <- renderLeaflet({
     cities$score <-((input$population/10*cities$populationScore)+
         (input$distance/10*cities$distanceScore)+
         (input$culture/10*cities$culturalScore)+

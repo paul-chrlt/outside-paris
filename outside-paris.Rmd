@@ -127,7 +127,7 @@ francemap
 Il pourrait être intéressant de visualiser l'effet de chacun des scores en "temps réel", pour permettre à chacun de pondérer chaque critère selon ses envies. Une application Shiny s'alimentant sur les données que l'on a récupérées.  
 Nous allons simplement enregistrer les données dans le répertoire de l'application Shiny pour qu'elles puissent être réutilisées.
 ```{r shinyexport}
-save(cities,file="./shinyapp/cities.Rdata")
+save(cities,file="./shinyapp/outside-paris/cities.Rdata")
 ```
 
 L'application est visible ici : 

@@ -35,7 +35,7 @@ shinyUI(fluidPage(
             )),
             # Show a plot
         mainPanel(
-                plotOutput("distPlot")
+                leafletOutput("distPlot")
             )
         )
     )
