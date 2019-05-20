@@ -10,6 +10,11 @@
 /geocache/*
 coordinates.csv
 culture.csv
+cities.Rdata
+coordinatesmuseums.csv
+getPublicCulturePlaces.R
+museums.xlsx
+publiccultureplaces.ods
 
 # Output files from R CMD build
 /*.tar.gz
