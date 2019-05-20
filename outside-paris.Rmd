@@ -111,10 +111,17 @@ francemap
 ## Critère d'emploi
 
 Essayons maintenant de voir quelle ville a le meilleur potentiel pour trouver du travail. Nous allons scrapper le site indeed pour obtenir le nombre d'offres en ligne sur chacune de nos villes.
-
 ```{r getJobs}
 source("getjobs.R")
 cities$jobs <- getJobs(cities)
 cities$jobScore <- getScore(cities$jobs)
 cities$score <- (cities$populationScore+cities$distanceScore+cities$culturalScore+cities$jobScore)/4
+francemap <- leaflet() %>%
+    addTiles() %>%
+    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score/2, label = cities$cityLabel)
+francemap
 ```
+
+## Visualisation interactive
+
+Il pourrait être intéressant de visualiser l'effet de chacun des scores en "temps réel", pour permettre à chacun de pondérer chaque critère selon ses envies. Une application Shiny s'alimentant sur les données que l'on a récupérées 
