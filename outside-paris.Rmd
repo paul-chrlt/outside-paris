@@ -130,4 +130,6 @@ Nous allons simplement enregistrer les données dans le répertoire de l'applica
 save(cities,file="./shinyapp/outside-paris/cities.Rdata")
 ```
 
-L'application est visible ici : 
+L'application est visible ici : https://paul-chrlt.shinyapps.io/outside-paris/
+
+Finalement, ca donne envie de créer la même chose sous forme de carte de chaleur, pour avoir cette vision de facon plus universelle.

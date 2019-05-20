@@ -11,7 +11,7 @@ shinyServer(function(input, output) {
         (input$jobs/10*cities$jobScore))/4
     francemap <- leaflet() %>%
       addTiles() %>%
-      addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score/2, label = cities$cityLabel)
+      addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score, label = cities$cityLabel)
     francemap
     # # generate bins based on input$bins from ui.R
     # x    <- faithful[, 2] 

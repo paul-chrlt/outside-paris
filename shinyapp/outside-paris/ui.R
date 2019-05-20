@@ -1,5 +1,5 @@
 library(shiny)
-
+library(leaflet)
 # Define UI
 shinyUI(fluidPage(
     
