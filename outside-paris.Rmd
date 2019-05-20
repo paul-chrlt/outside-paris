@@ -52,7 +52,7 @@ cities$populationScore <- getScore(cities$population)
 cities$score <- cities$populationScore
 francemap <- leaflet() %>%
     addTiles() %>%
-    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score, label = cities$cityLabel)
+    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score/2, label = cities$cityLabel)
 francemap
 ```
 
@@ -73,7 +73,7 @@ cities$distanceScore <- 100-getScore(cities$distanceToParis)
 cities$score <- (cities$populationScore+cities$distanceScore)/2
 francemap <- leaflet() %>%
     addTiles() %>%
-    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score, label = cities$cityLabel)
+    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score/2, label = cities$cityLabel)
 francemap
 kable(cities[1:6,c(1,6)], format = "markdown")
 ```
@@ -93,4 +93,28 @@ source("getCultureEvents.R")
 events <- getCultureEvents(cultureAgendaLink,cities)
 kable(events[1:6], format = "markdown")
 ```
-Les disparités sont (beaucoup trop) fortes, la source de l'agenda culturel n'est probablement pas la meilleure pour ce que nous cherchons à obtenir. data.gouv.fr a probablement autre chose à nous proposer pour compenser.
+Les disparités sont (beaucoup trop) fortes, la source de l'agenda culturel n'est probablement pas la meilleure pour ce que nous cherchons à obtenir. data.gouv.fr a probablement autre chose à nous proposer pour compenser.  
+Explorons la piste des musées, ce fichier contient 1250 lignes : https://www.data.gouv.fr/fr/datasets/r/22df4a13-72d8-4b34-940e-8aec297b5ded. Il faudra ici parser un fichier .xlsx, calculer les coordonnées gps puis les distances par rapport à la liste des villes.  
+On se rend compte qu'une partie du code pourrait être factorisé.
+```{r getMuseums}
+museumsSourceLink <- "https://www.data.gouv.fr/fr/datasets/r/22df4a13-72d8-4b34-940e-8aec297b5ded"
+source("getMuseums.R")
+cities$museums <- getMuseums(museumsSourceLink,cities)
+cities$culturalScore <- getScore(cities$museums)
+cities$score <- (cities$populationScore+cities$distanceScore+cities$culturalScore)/3
+francemap <- leaflet() %>%
+    addTiles() %>%
+    addCircleMarkers(lng = cities$lon, lat = cities$lat, radius = cities$score/2, label = cities$cityLabel)
+francemap
+```
+
+## Critère d'emploi
+
+Essayons maintenant de voir quelle ville a le meilleur potentiel pour trouver du travail. Nous allons scrapper le site indeed pour obtenir le nombre d'offres en ligne sur chacune de nos villes.
+
+```{r getJobs}
+source("getjobs.R")
+cities$jobs <- getJobs(cities)
+cities$jobScore <- getScore(cities$jobs)
+cities$score <- (cities$populationScore+cities$distanceScore+cities$culturalScore+cities$jobScore)/4
+```
